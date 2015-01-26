@@ -7,6 +7,7 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+#include <fstream>
 
 using namespace std;
 
@@ -49,6 +50,8 @@ void generate_CD(vector<vector<int> > &data, vector<int> colIDs) {
 
 
 int main() {
+	ofstream outFile("sData.txt");
+
     srand(time(NULL));
     // set the parameter: # of rows and # of attributes
     int N = 15;
@@ -74,8 +77,15 @@ int main() {
 	}
 
 	// add FD
+	int fdCount = 5;
+	outFile << fdCount << endl;
 	for ( int timer=0 ; timer<5 ; timer++ ) {
-		int col = rand() % (M-1) + 1;
+		int col1 = rand() % (M-1) + 1;
+		int col2 = rand() % (M-1) + 1;
+		for ( int i=0 ; i<N ; i++ ) {
+			data[i][col2] = (data[i][col1] * 32767) % (2*upperBound);
+		}
+/*
 		for ( int i=0 ; i<N ; i++ ) {
 			if ( i==0 || data[i][0]!=data[i-1][0] ) {
 				data[i][col] = 100 + rand() % upperBound;
@@ -84,9 +94,15 @@ int main() {
 				data[i][col] = data[i-1][col];
 			}
 		}
+*/
+		// generate FD: col1 -> col2
+		outFile << col1 << " " << col2 << endl;
 	}
+	outFile << endl;
 
 	// add OD
+	int odCount = 5;
+	outFile << odCount << " ";
 	for ( int timer=0 ; timer<5 ; timer++ ) {
 		int col = rand() % (M-1) + 1;
 		for ( int i=0 ; i<N ; i++ ) {
@@ -100,8 +116,10 @@ int main() {
 				data[i][col] = data[i-1][col];
 			}
 		}
-
+		// generate OD: {A<} ~> {C<=}, {A=} ~> {C=}
+		outFile << col << " ";
 	}
+	outFile << "\n\n";
 
     // add CD 
 	int aa[3] = {2,3,4};
@@ -111,9 +129,9 @@ int main() {
 	// print
 	for ( int i=0 ; i<N ; i++ ) {
 		for ( int j=0 ; j<M ; j++ ) {
-			cout << data[i][j] << " ";
+			outFile << data[i][j] << " ";
 		}
-		cout << endl;
+		outFile << endl;
 	}
 
 	return 0;

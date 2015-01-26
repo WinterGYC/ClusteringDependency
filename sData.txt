@@ -1,0 +1,200 @@
+\section{Inference Rules}
+Inference rules, can greatly help us to prone the search space. However, inference rules for clustering dependency is not very comprehensive. However, with the help of functional dependency and ordering dependency we will be able to discover more interesting rules that are beneficial towards the dependency mining problem.\\
+
+\textbf{Theorem 0 (Empty cluster):} For any non-empty attribute A, $ A \mapsto \{\}$.
+
+\
+
+\textit{Proof:} It is a empty clustering dependency.
+
+
+$\blacksquare$\\
+
+\textbf{Theorem 1 (Reflexivity):} For any non-empty attribute A, $ A \mapsto \{A\}$.
+
+\
+
+\textit{Proof:} If the table is ordered by A, then it trivially is clustered by A.
+
+
+$\blacksquare$\\
+
+
+\textbf{Theorem 2 (Union):} Given two clustering dependencies $A \mapsto S$ and $A \mapsto T$ where S and T are two sets of attributes. Then the clustering dependency $A \mapsto S \cup T$ will be true. Or
+\\
+
+\inference{A \mapsto S,~ A \mapsto T}{A \mapsto S \cup T}
+
+\
+
+\textit{Proof:} Let $ S = \{ B_1, B_2, ..., B_m\}, T = \{C_1,C_2,...,C_n\}$. 
+
+%COMMENTS-------
+\iffalse
+Now, assume $ A \mapsto S \cup T$ does not hold, then by definition there is at least one triple of tuples that violates the rules, written as:
+
+$\exists (t_x, t_y, t_z)(~t_x.A \leqslant t_y.A \leqslant t_z.A ~$
+
+$ ~~~~~~~~\wedge ~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j$
+
+$ ~~~~~~~~\wedge ~~~~~\wedge_{j = 1}^{n} t_x.C_j = t_z.C_j$
+
+$ ~~~~~~~~\wedge ~~~~~~\neg(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j) \vee \neg(\wedge_{j = 1}^{m} t_x.C_j = t_y.C_j) ~)~~~~~~~~~~~(*)$
+\fi
+%COMMENTS-------
+
+Now that we have both $A \mapsto S$ and $A \mapsto T$ being true, then by definition we will have:
+
+$\forall (t_x, t_y, t_z)( (~t_x.A \leqslant t_y.A \leqslant t_z.A ~~\wedge~~\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j) $
+
+$ ~~~~~~~~~~~~~~~~~~ \mapsto $
+
+
+$ ~~~~~~~~~~~~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j)$
+
+AND
+
+$\forall (t_x, t_y, t_z)( (~t_x.A \leqslant t_y.A \leqslant t_z.A ~~\wedge~~\wedge_{j = 1}^{m} t_x.C_j = t_z.C_j) $
+
+$ ~~~~~~~~~~~~~~~~~~ \mapsto $
+
+
+$ ~~~~~~~~~~~~~~~~\wedge_{j = 1}^{m} t_x.C_j = t_y.C_j)$
+
+Putting them together, we got:
+
+$\forall (t_x, t_y, t_z)( (~t_x.A \leqslant t_y.A \leqslant t_z.A ~~\wedge~~$
+
+$ ~~~~~~~~~~~~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j ~\wedge~ \wedge_{j = 1}^{m} t_x.C_j = t_z.C_j) $
+
+$ ~~~~~~~~~~~~~~~~~~ \mapsto $
+
+
+$ ~~~~~~~~~~~~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j ~\wedge~ \wedge_{j = 1}^{m} t_x.C_j = t_y.C_j )$
+
+which is actually the definition of clustering dependency $ A \mapsto S \cup T$.
+
+$\blacksquare$\\
+
+
+\textbf{Theorem 3 (Expansion with FD)} Given a clustering dependency $A \mapsto \{B_1,B_2,...,B_m\}$ and an \textbf{functional dependency} $S \rightarrow  C$, where $S \subseteq \{B_1,B_2,...,B_m\}$, we can get the dependency $A \mapsto \{B_1,B_2,...,B_m,C\}$ and it would be true. We can also write it as the form of:\\
+
+\inference{A \mapsto \{B_1,B_2,...,B_m\},~ S \rightarrow C }{A \mapsto \{B_1,B_2,...,B_m,C\}}
+
+\
+
+\textit{Proof:} 
+
+First note that we did not specify that $m \geqslant 1$ and $ S \neq \emptyset $.
+
+If $m=0$, we will get $A \mapsto \{\}$ and $ \{\} \rightarrow C$, with the former being a empty clustering dependency, and the latter being a functional dependency that says all the tuples have the same C value. If that is true, then obviously $C$ is clustered as well.
+
+If $m \neq 0$ and $ S = \emptyset $, still, all the tuples have the same C value, which suits the following discussion. 
+
+From $A \mapsto \{B_1,B_2,...,B_m\}$ we will know that by definition:
+
+$\forall (t_x, t_y, t_z)( (~t_x.A \leqslant t_y.A \leqslant t_z.A ~~\wedge~~\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j) $
+
+$ ~~~~~~~~~~~~~~~~~~ \mapsto $
+
+
+$ ~~~~~~~~~~~~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j)$
+
+ 
+
+Now, assume $ A \mapsto \{B_1,B_2,...,B_m,C\}$ does not hold, then by definition there is at least one triple of tuples $t_x, t_y, t_z$ (where $t_x, t_y, t_z$ are all in the relation r) that violates the rules, written as:
+
+$\exists (t_x, t_y, t_z)(~t_x.A \leqslant t_y.A \leqslant t_z.A ~$
+
+$ ~~~~~~~~\wedge ~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j$
+
+$ ~~~~~~~~\wedge ~~~~~t_x.C = t_z.C$
+
+$ ~~~~~~~~\wedge ~~~~~~\neg(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j) \vee \neg( t_x.C = t_y.C) ~)~~~~~~~~~~~~~~~~~(*)$
+
+Now let's look into the $(*)$ condition, since $A \mapsto \{B_1,B_2,...,B_m\}$ then from the above definition the left part of $(*)$ will always be false since $(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j)$ will always be true. And now that $(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j)$ is true, according to the functional dependency $S \rightarrow  C$, we can know that $ t_x.C = t_y.C$ is true as well. So $(*)$ is false which means our clustering dependency $ A \mapsto \{B_1,B_2,...,B_m,C\}$ will always hold.
+
+$\blacksquare$\\
+
+\textbf{Theorem 4 (OD implication)} Clustering dependency can be subsumed by a set of order dependencies. Primitively, given two order dependencies: $\{A^{<}\}\leadsto\{B^{\leqslant}\}$ and $\{A^{=}\}\leadsto\{B^{=}\}$. Then we can get the clustering dependency $ A \mapsto B $, written as:\\
+
+\inference{ \{ A^{<} \}  \leadsto \{ B^{\leqslant} \},~ \{A^{=}\}\leadsto\{B^{=}\}}{A \mapsto \{B\}}
+
+\
+
+\textit{Proof:} Let's assume $A \mapsto \{B\}$ does not hold. Should that happen, by definition we will have at least one triple of tuples $t_x, t_y, t_z$ (where $t_x, t_y, t_z$ are all in the relation r) that violates the rules, written as:
+
+$\exists (t_x, t_y, t_z)(~t_x.A \leqslant t_y.A \leqslant t_z.A ~$
+
+$ ~~~~~~~~\wedge ~~~~~t_x.B = t_z.B$
+
+$ ~~~~~~~~\wedge ~~~~~t_x.B \neq t_y.B~)$
+
+Let us divide the scenarios into four cases and investigate them one by one:
+
+(1) $t_x.A = t_y.A = t_z.A$ (2) $t_x.A < t_y.A < t_z.A$ (3) $t_x.A < t_y.A = t_z.A$ and (4) $t_x.A = t_y.A < t_z.A$.
+
+Case (1): $t_x.A = t_y.A = t_z.A$, according to the order dependency $\{A^{=}\}\leadsto\{B^{=}\}$, $t_x.B$ should be equal to $t_y.B$.
+
+Case (2): $t_x.A < t_y.A < t_z.A$, according to the order dependency $\{A^{<}\}\leadsto\{B^{\leqslant}\}$, we will know that $t_x.B \leqslant t_y.B \leqslant t_z.B$. If the violation occurs, then $t_x.B$ will be equal to $t_z.B$, which means $t_x.B = t_y.B = t_z.B$. So the violation would not occur.
+
+Case (3): $t_x.A < t_y.A = t_z.A$, according to the given order dependencies, we can get $t_x.B \leqslant t_y.B = t_z.B$. If the violation occurs which indicates $t_x.B = t_z.B$, we will know that $t_x.B = t_y.B = t_z.B$. So the violation would not occur.
+
+Case (4): $t_x.A = t_y.A < t_z.A$, according to the given order dependencies, we can get $t_x.B = t_y.B \leqslant t_z.B$. If the violation occurs which indicates $t_x.B = t_z.B$, we will know that $t_x.B = t_y.B = t_z.B$. So the violation would not occur.
+
+So in general, the violation would not occur, meaning $A \mapsto \{B\}$ will always hold.
+
+$\blacksquare$\\
+
+Obviously, Theorem 4 implies the following inference rules:\\
+
+\inference{ \{ A^{<} \}  \leadsto \{ B^{<} \},~ \{A^{=}\}\leadsto\{B^{=}\}}{A \mapsto \{B\}}
+
+\
+
+
+\inference{ \{ A^{<} \}  \leadsto \{ B^{=} \},~ \{A^{=}\}\leadsto\{B^{=}\}}{A \mapsto \{B\}}
+
+\
+
+\
+
+
+
+\textbf{Theorem 5 (Expansion with OD)} Given a clustering dependency $A \mapsto \{B_1,B_2,...,B_m\}$ and two \textbf{order dependencies} $\{ A^{<} \}  \leadsto \{ C^{\leqslant} \}$, $\{A^{=}\}\leadsto\{C^{=}\}$, we can get the dependency $A \mapsto \{B_1,B_2,...,B_m,C\}$ being true. We can also write it as the form of:\\
+
+\inference{A \mapsto \{B_1,B_2,...,B_m\},~ \{ A^{<} \}  \leadsto \{ C^{\leqslant} \}, ~\{A^{=}\}\leadsto\{C^{=}\} }{A \mapsto \{B_1,B_2,...,B_m,C\}}
+
+\
+
+\textit{Proof:} It is subsumed by Theorem 2 and Theorem 4 but it is worth mentioning.
+
+$\blacksquare$\\
+
+\textbf{Theorem 6} Given an ordering dependency $\{A^{<}\} \mapsto \{B_1^{<}\}$, and a bunch of functional dependencies $A \rightarrow B_1$,  $A \rightarrow B_2$,  ... , $A \rightarrow B_m$, we will have clustering dependency as $A \mapsto \{B_1,B_2,...,B_m\}$. As for:\\
+
+\inference{\{ A^{<} \}  \mapsto \{ B_1^{<} \}, A \rightarrow B_1, A \rightarrow B_2,  ... , A \rightarrow B_m}{A \mapsto \{B_1,B_2,...,B_m\}}
+
+\
+
+\textit{Proof:} 
+Assume $ A \mapsto \{B_1,B_2,...,B_m\} $ does not hold, then by definition there is at least one triple of tuples that violates the rules, written as:
+
+$\exists (t_x, t_y, t_z)(~t_x.A \leqslant t_y.A \leqslant t_z.A ~$
+
+$ ~~~~~~~~\wedge ~~~~~\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j$
+
+$ ~~~~~~~~\wedge ~~~~~~\neg(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j) $
+
+According to functional dependency $A \rightarrow B_1$ and order dependency $\{A^{<}\} \mapsto \{B_1^{<}\}$, we will know that
+
+(1) When $A$ is sorted, $B_1$ will be sorted as well.
+
+
+(2) All the tuples with the same $A$ value should have the same $B_1$ value. Likewise, all the tuples with the same $B_1$ value should have the same $A$ value.
+
+Now, for a violation $t$ triple $(t_x, t_y, t_z)$, we must a have $\wedge_{j = 1}^{m} t_x.B_j = t_z.B_j$, and thus we will know $t_x.B_1 = t_z.B_1$. According to (2), we can get $t_x.A = t_z.A$, furthermore, $t_x.A = t_y.A = t_z.A$.
+
+At this point, With $t_x.A = t_y.A$ and all the remaining functional dependencies $A \rightarrow B_2,  A \rightarrow B_3, ... , A \rightarrow B_m$. We will know that $(\wedge_{j = 1}^{m} t_x.B_j = t_y.B_j)$. Should that being true, the violation would never occur. Thus the original clustering constraint will hold.
+
+$\blacksquare$\\
