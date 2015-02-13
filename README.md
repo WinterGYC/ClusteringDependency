@@ -1,5 +1,12 @@
 Code for algorithms used in clustering dependency.
 
-TODO:
-1) Change OD into another form and rewrite the inference rules
-2) Generate CD with multiple RHS attributes, A |-> {B,C,D}
+cdValid.cpp---contains the validation algorithm for clustering dependency
+cdMining.cpp--contains the mining algorithm for clustering dependency
+syntheticData.cpp--to generate the sample data for validation/mining algorithm
+
+MANUAL:
+1) g++ -o input syntheticData.cpp
+2) ./input -N -M -fdCount -cdCount
+    eg. ./input 100 6 2 2
+3) g++ -o mining cdMining.cpp
+    ./Mining

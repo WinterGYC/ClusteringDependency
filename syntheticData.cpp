@@ -17,8 +17,20 @@ bool cmp(vector<int> a, vector<int> b) {
 
 void generate_CD(vector<vector<int> > &data, vector<int> colIDs) {
     int N = data.size();
-    int cols = colIDs.size();
+    //int cols = colIDs.size();
 
+    int pFast = 1, pSlow = 1;
+    while ( pFast < colIDs.size() ) {
+    	while ( pFast < colIDs.size() && colIDs[pFast]==colIDs[pFast-1] ) {
+    		pFast++;
+    	}
+    	if ( pFast < colIDs.size() ) {
+    		colIDs[pSlow++] = colIDs[pFast++];
+    	}
+    }
+
+    int cols = pSlow;
+    for ( int i=0 ; i<cols ; i++ ) cout << colIDs[i] << " "; cout << endl;
 	// we dont consider the value of A here
 	// genenate the tuples row by row
 	// first row
@@ -49,27 +61,32 @@ void generate_CD(vector<vector<int> > &data, vector<int> colIDs) {
 
 
 
-int main() {
+int main(int argc, char* argv[]) {
+	int N, M, fdCount, odCount;
+
+	N = atoi(argv[1]);
+	M = atoi(argv[2]);
+	fdCount = atoi(argv[3]);
+	odCount = atoi(argv[4]); 
+
 	ofstream outFile("sData.txt");
+	outFile << N << " " << M << endl;
 
     srand(time(NULL));
-    // set the parameter: # of rows and # of attributes
-    int N = 15;
-    int M = 6;
 
     // matrix initialization
     vector<vector<int> > data ( N, vector<int>(M, 0) );
 
     // generate column A, as the LHS
     for ( int i=0 ; i<N ; i++ ) {
-        data[i][0] = rand()%10;
+        data[i][0] = rand()%(N/3);
     }
 
     // sort the table by A
     sort(data.begin(), data.end(), cmp);
 
 	// add some random data
-	int upperBound = N*2;
+	int upperBound = N/50;
 	for ( int i=0 ; i<N ; i++ ) {
 		for ( int j=1 ; j<M ; j++ ) {
 			data[i][j] = rand() % upperBound;
@@ -77,9 +94,8 @@ int main() {
 	}
 
 	// add FD
-	int fdCount = 5;
 	outFile << fdCount << endl;
-	for ( int timer=0 ; timer<5 ; timer++ ) {
+	for ( int timer=0 ; timer<odCount ; timer++ ) {
 		int col1 = rand() % (M-1) + 1;
 		int col2 = rand() % (M-1) + 1;
 		for ( int i=0 ; i<N ; i++ ) {
@@ -101,13 +117,12 @@ int main() {
 	outFile << endl;
 
 	// add OD
-	int odCount = 5;
 	outFile << odCount << " ";
-	for ( int timer=0 ; timer<5 ; timer++ ) {
+	for ( int timer=0 ; timer<odCount ; timer++ ) {
 		int col = rand() % (M-1) + 1;
 		for ( int i=0 ; i<N ; i++ ) {
 			if ( i==0 ) {
-				data[i][col] = 200 + rand() % 5;
+				data[i][col] = rand() % 5;
 			}
 			else if ( data[i][0]!=data[i-1][0] ) {
 				data[i][col] = data[i-1][col] + rand() % 5;
@@ -122,10 +137,17 @@ int main() {
 	outFile << "\n\n";
 
     // add CD 
-	int aa[3] = {2,3,4};
-	vector<int> tmp(aa,aa+3);
-	generate_CD( data, tmp );
-	
+    int cdCount = sqrt(M)/10+1;
+    for ( int i=0 ; i<cdCount ; i++ ) {
+    	int cols = rand() % (M/5) + 1;
+    	vector<int> list;
+    	for ( int i=0 ; i<N ; i++ ) {
+    		list.push_back( rand() % N );
+    	}
+    	sort( list.begin(), list.end() );
+    	//generate_CD( data, list );
+    }
+
 	// print
 	for ( int i=0 ; i<N ; i++ ) {
 		for ( int j=0 ; j<M ; j++ ) {
@@ -133,6 +155,8 @@ int main() {
 		}
 		outFile << endl;
 	}
+
+	cout << "Data generated, see sData.txt" << endl;
 
 	return 0;
 }

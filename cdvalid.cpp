@@ -12,10 +12,26 @@ using namespace std;
 
 int global_LHS;
 
+string itoa(int number) {
+    string result = "";
+
+    if ( number==0 ) {
+        return "0";
+    }
+    while ( number!=0 ) {
+        result = result + char( number % 10 + '0');
+        number /= 10;
+    }
+
+    reverse(result.begin() , result.end());
+    return result;
+}
+
 bool cmp(vector<string> a, vector<string> b) {
     // only makes sense when
     return ( atoi(a[global_LHS].c_str()) < atoi(b[global_LHS].c_str()) );
 }
+
 void printRes(vector<vector<string> > result) {
     int n = result.size();
     int m = result[0].size();
