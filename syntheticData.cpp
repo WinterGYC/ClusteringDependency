@@ -15,20 +15,6 @@ using namespace std;
 
 ofstream testLog("log.txt");
 
-string to_string(int num) {
-    if ( num==0 ) {
-        return "0";
-    }
-
-    string result;
-    while ( num!=0 ) {
-        result = (char)(num%10+'0') + result;
-        num /= 10;
-    }
-
-    return result;
-}
-
 bool cmp(vector<int> a, vector<int> b) {
     return a[0] < b[0];
 }
@@ -165,11 +151,26 @@ int main(int argc, char* argv[]) {
 
     // add CD
     // outFile << cdCount << "\n\n";
-    if ( 1 ) {
+    map<int,bool> cdPool;
+    for ( int i=0 ; i<cdCount ; i++ ) {
     	vector<int> list;
-    	for ( int i=0 ; i<cdCount ; i++ ) {
-            int col = rand() % (M-1) + 1;
-    		list.push_back( col );
+    	int colCount = rand() % (M-1) + 1;
+    	int flag = 0;
+    	for ( int j=0 ; j<colCount ; j++ ) {
+            int tmp = rand() % (M/4*3-1) + 1;
+            if ( flag > 1000 ) {
+            	break;
+            }
+            if ( cdPool[tmp] ) {
+            	j--;
+            	flag++;
+            	continue;
+            }
+    		list.push_back( tmp );
+    		cdPool[tmp] = true;
+    	}
+    	if ( flag > 1000 ) {
+    		break;
     	}
     	sort( list.begin(), list.end() );
     	generate_CD( data, list );
@@ -177,6 +178,7 @@ int main(int argc, char* argv[]) {
 
 	// add FD
 	outFile << fdCount << endl;
+	int flag = 0;
 	for ( int timer=0 ; timer<odCount ; timer++ ) {
 		int col1 = rand() % (M-1) + 1;
 		int col2 = rand() % (M-1) + 1;
@@ -189,6 +191,17 @@ int main(int argc, char* argv[]) {
             col2 = col1-col2;
             col1 = col1-col2;
 		}
+
+		if ( flag > 1000 ) {
+			break;
+		}
+
+		if ( cdPool[col2] ) {
+			timer--;
+			flag++;
+			continue;
+		}
+
 		for ( int i=0 ; i<N ; i++ ) {
 			data[i][col2] = (data[i][col1] * 32767) % (2*upperBound);
 		}
@@ -204,13 +217,30 @@ int main(int argc, char* argv[]) {
 */
 		// generate FD: col1 -> col2
 		outFile << col1 << " " << col2 << endl;
+		cdPool[col2] = true;
+		flag = 0;
 	}
 	outFile << endl;
 
 	// add OD
 	outFile << odCount << endl;
+	flag = 0;
 	for ( int timer=0 ; timer<odCount ; timer++ ) {
 		int col = rand() % (M-1) + 1;
+
+		if ( flag > 1000 ) {
+			break;
+		}
+		
+		if ( cdPool[col] ) {
+			timer--;
+			flag++;
+			continue;
+		}
+
+		cdPool[col] = true;
+		flag = 0;
+
 		for ( int i=0 ; i<N ; i++ ) {
 			if ( i==0 ) {
 				data[i][col] = rand() % 5;

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-ofstream testFile("llllllog.txt");
+//ofstream testFile("llllllog.txt");
 
 long long nodesLeft;
 long long maxState;
@@ -180,10 +180,10 @@ bool containsAtt(long long state, long long col) {
 void printState(long long state) {
     for ( long long i=1 ; i<=16 ; i++ ) {
         if ( ((1<<i) & state) == ( 1<< i ) ) {
-            testFile << i << " ";
+            //testFile << i << " ";
         }
     }
-    testFile << "$" << endl;
+    //testFile << "$" << endl;
 }
 
 bool cover(long long a, long long b) {
@@ -405,7 +405,7 @@ int main() {
 			if ( nodeValid[p]==1 ) {
 				// there's a VALID node here, use it to expand
 				// first apply union rule
-				testFile << "FOUND VALID" << endl;
+				//testFile << "FOUND VALID" << endl;
                 printState(p);
 
 				for ( long long i=0 ; i<validRHS.size() ; i++ ) {
@@ -413,15 +413,16 @@ int main() {
 					if ( (validRHS[i] & p)==0 ) {
 						// found a new valid node!
 						foundValidNode( validRHS[i] | p );
-						testFile << "SET valid 1" << endl;
+						//testFile << "SET valid 1" << endl;
                         printState(validRHS[i] | p);
 					}
 				}
 				// then apply rules with OD/FD
 				for ( long long i=0 ; i<neighbours[p].size() ; i++ ) {
+					//testFile << "cost 1: " << neighbours[p].size() << endl;
 					if ( neighbours[p][i] > p ) { // as we are going DOWN
 						foundValidNode( neighbours[p][i] );
-						testFile << "SET valid 2" << endl;
+						//testFile << "SET valid 2" << endl;
 						printState(neighbours[p][i]);
 					}
 				}
@@ -429,7 +430,7 @@ int main() {
 			else if ( nodeValid[p]==2 ) {
 				// there's a INVALID node here, use it to expand
 				// first apply the union rule
-				testFile << "FOUND IIIIIIIIIIINVALID" << endl;
+				//testFile << "FOUND IIIIIIIIIIINVALID" << endl;
                 printState(p);
 				for ( long long i=0 ; i<validRHS.size() ; i++ ) {
 					// go through every valid RHS, find disjoint ones
@@ -437,15 +438,16 @@ int main() {
 					if ( (validRHS[i]<p ) && cover(p, validRHS[i]) ) {
 						// found a new valid node!
 						foundInvalidNode( p - validRHS[i] );
-						testFile << "SET INvalid 1 " << p << " " << validRHS[i] << endl;
+						//testFile << "SET INvalid 1 " << p << " " << validRHS[i] << endl;
 						printState( p - validRHS[i] );
 					}
 				}
 				// then apply rules with OD/FD
 				for ( long long i=0 ; i<neighbours[p].size() ; i++ ) {
 					if ( neighbours[p][i] < p ) { // as we are going UP
+						//testFile << "cost 1: " << neighbours[p].size() << endl;
 						foundInvalidNode( neighbours[p][i] );
-						testFile << "SET INvalid 2" << endl;
+						//testFile << "SET INvalid 2" << endl;
 						printState( neighbours[p][i] );
 					}
 				}
