@@ -72,15 +72,13 @@ int cdValid(vector<vector<string> > data, int LHSCol, vector<int> RHSCols) {
     //***
     //***
     global_LHS = LHSCol;
-
 /*
     cout << "RHS ATTs" << endl;
     for ( int i=0 ; i<RHSCols.size() ; i++ ) {
-        cout << RHSCols[i] << " ";
+        cout << RHSCols[i] << " ~ ";
     }
     cout << endl;
 */
-
     // first sort on LHS attribute
     sort(data.begin(), data.end(), cmp );
 
@@ -95,6 +93,7 @@ int cdValid(vector<vector<string> > data, int LHSCol, vector<int> RHSCols) {
         lastTuple = lastTuple + data[0][RHSCols[j]];
     }
 
+
     map<string, bool> BList;
     BList[lastTuple] = true;
     for ( int i=1 ; i<n ; i++ ) {
@@ -104,7 +103,7 @@ int cdValid(vector<vector<string> > data, int LHSCol, vector<int> RHSCols) {
             currTuple = currTuple + data[i][RHSCols[j]];
         }
 
-        //cout << currTuple << endl;
+        //if ( i<10 ) cout << currTuple << endl;
         // case 1:
         if ( !BList[currTuple] && data[i][LHSCol] != data[i-1][LHSCol] ) {
             // dif A, new B
@@ -212,12 +211,12 @@ int main() {
 	map<int, int> fdList;
 	int fdCount, odCount;
 	inFile >> fdCount;
-	//cout << "Number of FDs: " << fdCount << endl;
+	cout << "Number of FDs: " << fdCount << endl;
 	for ( int i=0 ; i<fdCount ; i++ ) {
 		int col1, col2;
 		inFile >> col1 >> col2;
 		fdList[col1] = col2;
-		//cout << col1 << " " << col2 << endl;
+		cout << col1 << " " << col2 << endl;
 
 		// add edges
 		for ( int state=2 ; state < (1<<M) ; state+=2 ) {
@@ -236,12 +235,12 @@ int main() {
 	// readin all order dependencies
 	set<int> odList;
 	inFile >> odCount;
-	//cout << "Number of ODs: " << odCount << endl;
+	cout << "Number of ODs: " << odCount << endl;
 	for ( int i=0 ; i<odCount ; i++ ) {
 		int col;
 		inFile >> col;
 		odList.insert(col);
-		//cout << "OD " << "A ~> " << col << endl;
+		cout << "OD " << "A ~> " << col << endl;
 
 		// add edges
 		for ( int state=2 ; state < (1<<M) ; state+=2 ) {
@@ -291,6 +290,12 @@ int main() {
 		}
 	}
 
+	for ( int i=0 ; i<10 ; i++,cout << endl ) {
+		for ( int j=0 ; j<M ; j++ ) {
+			cout << newData[i][j] << " ";
+		}
+	}
+
 	int LHSCol = 0;
 
 	nodesLeft = (1<<M)-1-M-1;
@@ -335,6 +340,13 @@ int main() {
             cout << endl;
         }
 	}
+
+	/*
+
+	vector<int> tmp;
+	tmp.push_back(6);
+	cout << cdValid(newData, LHSCol, tmp) << endl;
+*/
 
     printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 	cout << "END" << endl;
