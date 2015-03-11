@@ -154,11 +154,11 @@ int main(int argc, char* argv[]) {
     map<int,bool> cdPool;
     for ( int i=0 ; i<cdCount ; i++ ) {
     	vector<int> list;
-    	int colCount = rand() % (M-1) + 1;
+    	int colCount = rand() % (M/4-1) + 1;
     	int flag = 0;
     	for ( int j=0 ; j<colCount ; j++ ) {
-            int tmp = rand() % (M/4*3-1) + 1;
-            if ( flag > 1000 ) {
+            int tmp = rand() % (M-1) + 1;
+            if ( flag > 100000 ) {
             	break;
             }
             if ( cdPool[tmp] ) {
@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
     		list.push_back( tmp );
     		cdPool[tmp] = true;
     	}
-    	if ( flag > 1000 ) {
+    	if ( flag > 100000 ) {
     		break;
     	}
     	sort( list.begin(), list.end() );
@@ -221,6 +221,10 @@ int main(int argc, char* argv[]) {
 		flag = 0;
 	}
 	outFile << endl;
+    if ( flag > 1000 ) {
+    	cout << "please run again. " << endl;
+    	exit(0); 
+    }
 
 	// add OD
 	outFile << odCount << endl;
@@ -255,6 +259,10 @@ int main(int argc, char* argv[]) {
 		// generate OD: {A<} ~> {C<=}, {A=} ~> {C=}
 		outFile << col << " ";
 	}
+    if ( flag > 1000 ) {
+    	cout << "please run again. " << endl;
+    	exit(0); 
+    }
 	outFile << "\n\n";
 
 

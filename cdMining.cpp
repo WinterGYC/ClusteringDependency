@@ -393,6 +393,8 @@ int main() {
 
 	cout << "start searching" << endl;
 
+	long long optimized = 0;
+
 	while ( !largestDeg.empty() || !leftOver.empty() ) {
         cout << largestDeg.size() << " and " << leftOver.size() << endl;
 		// while we still have nodes that are not verifed yet
@@ -406,24 +408,26 @@ int main() {
 				// there's a VALID node here, use it to expand
 				// first apply union rule
 				//testFile << "FOUND VALID" << endl;
-                printState(p);
+                //printState(p);
 
 				for ( long long i=0 ; i<validRHS.size() ; i++ ) {
 					// go through every valid RHS, find disjolong long ones
-					if ( (validRHS[i] & p)==0 ) {
+					if ( (validRHS[i] & p)==0 && nodeValid[validRHS[i] | p] == 0 && ((validRHS[i] | p)&1)==0 ) {
 						// found a new valid node!
 						foundValidNode( validRHS[i] | p );
+						optimized++;
 						//testFile << "SET valid 1" << endl;
-                        printState(validRHS[i] | p);
+                        //printState(validRHS[i] | p);
 					}
 				}
 				// then apply rules with OD/FD
 				for ( long long i=0 ; i<neighbours[p].size() ; i++ ) {
 					//testFile << "cost 1: " << neighbours[p].size() << endl;
-					if ( neighbours[p][i] > p ) { // as we are going DOWN
+					if ( neighbours[p][i] > p && nodeValid[neighbours[p][i]]==0 && (neighbours[p][i]&1)==0 ) { // as we are going DOWN
 						foundValidNode( neighbours[p][i] );
+						optimized++;
 						//testFile << "SET valid 2" << endl;
-						printState(neighbours[p][i]);
+						//printState(neighbours[p][i]);
 					}
 				}
 			}
@@ -435,20 +439,22 @@ int main() {
 				for ( long long i=0 ; i<validRHS.size() ; i++ ) {
 					// go through every valid RHS, find disjoint ones
 					// p should full contain validRHS[i] (should we use (validRHS[i] & p) + (validRHS[i] ^ p) == p)? )
-					if ( (validRHS[i]<p ) && cover(p, validRHS[i]) ) {
+					if ( (validRHS[i]<p ) && cover(p, validRHS[i]) && nodeValid[p - validRHS[i]]==0 && ((p - validRHS[i])&1)==0 ) {
 						// found a new valid node!
 						foundInvalidNode( p - validRHS[i] );
+						optimized++;
 						//testFile << "SET INvalid 1 " << p << " " << validRHS[i] << endl;
-						printState( p - validRHS[i] );
+						//printState( p - validRHS[i] );
 					}
 				}
 				// then apply rules with OD/FD
 				for ( long long i=0 ; i<neighbours[p].size() ; i++ ) {
-					if ( neighbours[p][i] < p ) { // as we are going UP
+					if ( neighbours[p][i] < p && nodeValid[neighbours[p][i]]==0 && (neighbours[p][i]&1)==0 ) { // as we are going UP
 						//testFile << "cost 1: " << neighbours[p].size() << endl;
 						foundInvalidNode( neighbours[p][i] );
+						optimized++;
 						//testFile << "SET INvalid 2" << endl;
-						printState( neighbours[p][i] );
+						//printState( neighbours[p][i] );
 					}
 				}
 			}
@@ -544,7 +550,9 @@ int main() {
 		}
 		cout << endl;
 	}
+	cout << optimized << endl;
 	cout << "END" << endl;
+	cout << "We have optimized " << (double)optimized/(1<<(M-1))*100 << "% of the nodes" << endl;
     printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
 	getchar();
