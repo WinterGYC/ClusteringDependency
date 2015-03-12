@@ -540,9 +540,11 @@ int main() {
 */
 
 	cout << "the valid RHS are: " << endl;
+	int resCount = 0;
 	for ( long long i=0 ; i<validRHS.size() ; i++ ) {
         //cout << "valid State: " << validRHS[i] << endl;
         //cout << "valid Attributes: " << endl;
+		resCount++;
 		for ( long long j=0 ; j<M ; j++ ) {
 			if ( ((1<<j) & validRHS[i] ) == (1<<j) ) {
 				cout << j << " ";
@@ -550,7 +552,8 @@ int main() {
 		}
 		cout << endl;
 	}
-	cout << optimized << endl;
+	cout << "Total number of CDs: " << resCount << endl;
+	cout << "Total number of optimized nodes: "<< optimized << endl;
 	cout << "END" << endl;
 	cout << "We have optimized " << (double)optimized/(1<<(M-1))*100 << "% of the nodes" << endl;
     printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
