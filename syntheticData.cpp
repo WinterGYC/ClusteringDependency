@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
 	// add FD
 	outFile << fdCount << endl;
 	int flag = 0;
-	for ( int timer=0 ; timer<odCount ; timer++ ) {
+	for ( int timer=0 ; timer<fdCount ; timer++ ) {
 		int col1 = rand() % (M-1) + 1;
 		int col2 = rand() % (M-1) + 1;
 		if ( col1==col2 ) {
