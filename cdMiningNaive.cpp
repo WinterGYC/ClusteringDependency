@@ -90,7 +90,7 @@ int cdValid(vector<vector<string> > data, int LHSCol, vector<int> RHSCols) {
     // generate last tuple
     string lastTuple = "";
     for ( int j=0 ; j<RHSCols.size() ; j++ ) {
-        lastTuple = lastTuple + data[0][RHSCols[j]];
+        lastTuple = lastTuple + "_" + data[0][RHSCols[j]];
     }
 
 
@@ -100,10 +100,10 @@ int cdValid(vector<vector<string> > data, int LHSCol, vector<int> RHSCols) {
         // generate this partial tuple
         string currTuple = "";
         for ( int j=0 ; j<RHSCols.size() ; j++ ) {
-            currTuple = currTuple + data[i][RHSCols[j]];
+            currTuple = currTuple + "_" + data[i][RHSCols[j]];
         }
 
-        //if ( i<10 ) cout << currTuple << endl;
+        // cout << currTuple << endl;
         // case 1:
         if ( !BList[currTuple] && data[i][LHSCol] != data[i-1][LHSCol] ) {
             // dif A, new B
@@ -316,6 +316,7 @@ int main() {
 */
     cout << "start searching" << endl;
     cout << "the valid states are:" << endl;
+
 	for ( int state=2 ; state<(1<<M)-1 ; state+=2 ) {
         // add the nodes with no inference edge into leftOver set
         vector<int> tmpV;

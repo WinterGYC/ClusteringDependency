@@ -95,7 +95,7 @@ long long cdValid(vector<vector<string> > data, long long LHSCol, vector<long lo
     // generate last tuple
     string lastTuple = "";
     for ( long long j=0 ; j<RHSCols.size() ; j++ ) {
-        lastTuple = lastTuple + data[0][RHSCols[j]];
+        lastTuple = lastTuple + "_" + data[0][RHSCols[j]];
     }
 
     map<string, bool> BList;
@@ -104,7 +104,7 @@ long long cdValid(vector<vector<string> > data, long long LHSCol, vector<long lo
         // generate this partial tuple
         string currTuple = "";
         for ( long long j=0 ; j<RHSCols.size() ; j++ ) {
-            currTuple = currTuple + data[i][RHSCols[j]];
+            currTuple = currTuple + "_" + data[i][RHSCols[j]];
         }
 
         //cout << currTuple << endl;
@@ -269,7 +269,7 @@ int main() {
 		// add edges
 		for ( long long state=2 ; state < maxState ; state+=2 ) {
 			if ( !containsAtt(state, col) ) {
-				long long destState = state + ( 1<< col );
+				long long destState = state + ( 1 << col );
 				neighbours[state].push_back( destState );
 				neighbours[destState].push_back( state );
 
@@ -374,7 +374,7 @@ int main() {
 	// keep discovering new nodes
 	nodesLeft = maxState-M-1;
 
-    cout << "S" << maxState << endl;
+    cout << "maxState = " << maxState << endl;
     queue<long long> leftOver;
 	for ( long long state=2 ; state<maxState ; state+=2 ) {
         //cout << state << " " << nodeValid[state] << " " << nodeDeg[state] <<  endl;
@@ -396,7 +396,7 @@ int main() {
 	long long optimized = 0;
 
 	while ( !largestDeg.empty() || !leftOver.empty() ) {
-        cout << largestDeg.size() << " and " << leftOver.size() << endl;
+        // cout << largestDeg.size() << " and " << leftOver.size() << endl;
 		// while we still have nodes that are not verifed yet
 		while ( !newValidated.empty() ) {
 			// choose any one node, so why not the first one
@@ -520,6 +520,7 @@ int main() {
 				else {
 					foundInvalidNode(curr);
 				}
+				break;
 			}
 		}
 	}
@@ -558,7 +559,5 @@ int main() {
 	cout << "We have optimized " << (double)optimized/(1<<(M-1))*100 << "% of the nodes" << endl;
     printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
-	getchar();
-	getchar();
 	return 0;
 }

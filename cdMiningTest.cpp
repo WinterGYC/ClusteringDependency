@@ -95,7 +95,7 @@ long long cdValid(vector<vector<string> > data, long long LHSCol, vector<long lo
     // generate last tuple
     string lastTuple = "";
     for ( long long j=0 ; j<RHSCols.size() ; j++ ) {
-        lastTuple = lastTuple + data[0][RHSCols[j]];
+        lastTuple = lastTuple + "_" + data[0][RHSCols[j]];
     }
 
     map<string, bool> BList;
@@ -104,7 +104,7 @@ long long cdValid(vector<vector<string> > data, long long LHSCol, vector<long lo
         // generate this partial tuple
         string currTuple = "";
         for ( long long j=0 ; j<RHSCols.size() ; j++ ) {
-            currTuple = currTuple + data[i][RHSCols[j]];
+            currTuple = currTuple + "_" + data[i][RHSCols[j]];
         }
 
         //cout << currTuple << endl;
